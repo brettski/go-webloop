@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
+	"os"
 )
 
 func handleWebhook(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +24,7 @@ func handleWebhook(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func newContact(w http.ResponseWriter, r *http.Request) {
+func testPayload(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("headers: %v\n\n\n", r.Header)
 	err := r.ParseForm()
 	if err != nil {
@@ -33,7 +33,7 @@ func newContact(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("r.Form", r.Form)
 	fmt.Println("r.PostForm", r.PostForm)
-	fmt.Println("\n----\n")
+	fmt.Printf("\n----\n")
 	for key, value := range r.Form {
 		fmt.Printf("%s = %s\n", key, value)
 	}
@@ -41,10 +41,14 @@ func newContact(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	port := 8080
-	sport := strconv.Itoa(port)
+	defaultport := "8080"
+	sport, pexist := os.LookupEnv("PORT")
+	if !pexist {
+		sport = defaultport
+	}
 	http.HandleFunc("/webhook", handleWebhook)
-	http.HandleFunc("/NewContact", newContact)
+	http.HandleFunc("/testpayloadou812", testPayload)
+	http.HandleFunc("/slacktest", newContactHook)
 	log.Println("server started on port " + sport)
 	log.Fatal(http.ListenAndServe(":"+sport, nil))
 }
