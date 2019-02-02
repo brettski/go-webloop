@@ -1,5 +1,7 @@
 # go-webloop
 
+[![Build Status](https://travis-ci.com/brettski/go-webloop.svg?branch=master)](https://travis-ci.com/brettski/go-webloop)
+
 Not the webhook, but the...
 
 Add webhook to catch hooks from ActiveCampaign when for new client adds and post basic information to Slack inbound webhook
