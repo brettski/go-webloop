@@ -1,1 +1,5 @@
 runtime: go111
+
+env_variables:
+  AC_ACCOUNT_NAME: 'setme'
+  SLACK_WEBHOOK_URL: 'setme2'
