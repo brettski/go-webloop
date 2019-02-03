@@ -48,7 +48,8 @@ func main() {
 	}
 	http.HandleFunc("/webhook", handleWebhook)
 	http.HandleFunc("/testpayloadou812", testPayload)
-	http.HandleFunc("/slacktest", newContactHook)
+	http.HandleFunc("/newcontact", newContactHook)
+	http.HandleFunc("/prospectusrequest", prospectusRequest)
 	log.Println("server started on port " + sport)
 	log.Fatal(http.ListenAndServe(":"+sport, nil))
 }

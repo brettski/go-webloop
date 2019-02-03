@@ -10,7 +10,7 @@ import (
 )
 
 func newContactHook(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Entering Slack Test")
+	fmt.Println("Entering newContact")
 	if r.Method != http.MethodPost {
 		fmt.Println("not a post request, skipping")
 		return
