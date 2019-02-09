@@ -30,9 +30,9 @@ func prospectusRequest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	for key, value := range r.Form {
-		fmt.Printf("%s :: %s\n", key, value)
-	}
+	//for key, value := range r.Form {
+	//		fmt.Printf("%s :: %s\n", key, value)
+	//}
 	firstname := r.FormValue("contact[first_name]")
 	lastname := r.FormValue("contact[last_name]")
 	email := r.FormValue("contact[email]")
@@ -41,7 +41,9 @@ func prospectusRequest(w http.ResponseWriter, r *http.Request) {
 	yearsSponsor = strings.TrimPrefix(yearsSponsor, "||")
 	yearsSponsor = strings.TrimSuffix(yearsSponsor, "||")
 	//ysVals := strings.Split(yearsSponsor, "||")
-	fmt.Printf("Prospectus requested by %s %s, %s, sponsored:%s\n", firstname, lastname, email, yearsSponsor)
+	// Query string
+	requestSource := r.FormValue("from")
+	fmt.Printf("Prospectus requested by %s %s, %s, sponsored:%s, from:%s\n", firstname, lastname, email, yearsSponsor, requestSource)
 
 	accountname := os.Getenv("AC_ACCOUNT_NAME")
 	slackwebhookurl, urlexists := os.LookupEnv("SLACK_WEBHOOK_URL")
@@ -64,6 +66,10 @@ func prospectusRequest(w http.ResponseWriter, r *http.Request) {
 	}
 	if len(yearsSponsor) > 0 {
 		fields := []slackhook.Field{
+			slackhook.Field{
+				Title: "Request Source",
+				Value: requestSource,
+			},
 			slackhook.Field{
 				Title: "Years Sponsored",
 				Value: yearsSponsor,
