@@ -64,19 +64,34 @@ func prospectusRequest(w http.ResponseWriter, r *http.Request) {
 		TitleLink: fmt.Sprintf("https://%s.activehosted.com/app/contacts/%s", accountname, contactid),
 		Text:      email,
 	}
-	if len(yearsSponsor) > 0 {
-		fields := []slackhook.Field{
-			slackhook.Field{
-				Title: "Request Source",
-				Value: requestSource,
-			},
-			slackhook.Field{
-				Title: "Years Sponsored",
-				Value: yearsSponsor,
-			},
-		}
-		att.Fields = fields
+
+	fields := []slackhook.Field{
+		slackhook.Field{
+			Title: "Request Source",
+			Value: requestSource,
+		},
 	}
+
+	if len(yearsSponsor) > 0 {
+		fields = append(fields, slackhook.Field{
+			Title: "Years Sponsored",
+			Value: yearsSponsor,
+		})
+	}
+	att.Fields = fields
+
+	// 	fields := []slackhook.Field{
+	// slackhook.Field{
+	// 	Title: "Request Source",
+	// 	Value: requestSource,
+	// },
+	// 		slackhook.Field{
+	// 			Title: "Years Sponsored",
+	// 			Value: yearsSponsor,
+	// 		},
+	// 	}
+	// 	att.Fields = fields
+	// }
 	msg.AddAttachment(&att)
 	slack := slackhook.New(slackwebhookurl)
 	slack.Send(&msg)
