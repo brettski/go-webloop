@@ -47,9 +47,10 @@ func main() {
 		sport = defaultport
 	}
 	http.HandleFunc("/webhook", handleWebhook)
-	http.HandleFunc("/testpayloadou812", testPayload)
+	http.HandleFunc("/testpayload", testPayload)
 	http.HandleFunc("/newcontact", newContactHook)
 	http.HandleFunc("/prospectusrequest", prospectusRequest)
+	http.HandleFunc("/newsponsoronboard", newSponsorOnBoard)
 	log.Println("server started on port " + sport)
 	log.Fatal(http.ListenAndServe(":"+sport, nil))
 }
