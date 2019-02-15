@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// AcPostFields - Active Campaign POST field struct
 type AcPostFields struct {
 	FirstName    string
 	LastName     string
@@ -35,3 +36,5 @@ func parseAcPostHook(r *http.Request) (*AcPostFields, error) {
 
 	return &fields, nil
 }
+
+//ysVals := strings.Split(yearsSponsor, "||")

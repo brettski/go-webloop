@@ -21,6 +21,7 @@ func newSponsorOnBoard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println(fields)
+
 	env, err1 := getEnvironmentInfo()
 	if err1 != nil {
 		log.Fatal(err1)

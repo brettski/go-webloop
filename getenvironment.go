@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// Environment value struct
 type Environment struct {
 	AcAccountName   string
 	SlackWebhookURL string

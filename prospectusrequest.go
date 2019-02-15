@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/lytics/slackhook"
@@ -25,31 +24,28 @@ func prospectusRequest(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("content type %s is not supported. skipping", contentType)
 		return
 	}
-	err := r.ParseForm()
+
+	acFields, err := parseAcPostHook(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//for key, value := range r.Form {
-	//		fmt.Printf("%s :: %s\n", key, value)
-	//}
-	firstname := r.FormValue("contact[first_name]")
-	lastname := r.FormValue("contact[last_name]")
-	email := r.FormValue("contact[email]")
-	contactid := r.FormValue("contact[id]")
-	yearsSponsor := r.FormValue("contact[fields][yearssponsor]")
-	yearsSponsor = strings.TrimPrefix(yearsSponsor, "||")
-	yearsSponsor = strings.TrimSuffix(yearsSponsor, "||")
-	//ysVals := strings.Split(yearsSponsor, "||")
-	// Query string
+
+	firstname := acFields.FirstName
+	lastname := acFields.LastName
+	email := acFields.Email
+	contactid := acFields.ContactId
+	yearsSponsor := acFields.YearsSponsor
+	// Query string value
 	requestSource := r.FormValue("from")
 	fmt.Printf("Prospectus requested by %s %s, %s, sponsored:%s, from:%s\n", firstname, lastname, email, yearsSponsor, requestSource)
 
-	accountname := os.Getenv("AC_ACCOUNT_NAME")
-	slackwebhookurl, urlexists := os.LookupEnv("SLACK_WEBHOOK_URL")
-	if !urlexists {
-		log.Fatal("Slack webhook URL not provided. Stopping.")
+	env, err1 := getEnvironmentInfo()
+	if err1 != nil {
+		log.Fatal(err1)
 	}
+	accountname := env.SlackWebhookURL
+	slackwebhookurl := env.SlackWebhookURL
 
 	msg := slackhook.Message{
 		Text:      "Prospectus requested!",
@@ -80,19 +76,8 @@ func prospectusRequest(w http.ResponseWriter, r *http.Request) {
 	}
 	att.Fields = fields
 
-	// 	fields := []slackhook.Field{
-	// slackhook.Field{
-	// 	Title: "Request Source",
-	// 	Value: requestSource,
-	// },
-	// 		slackhook.Field{
-	// 			Title: "Years Sponsored",
-	// 			Value: yearsSponsor,
-	// 		},
-	// 	}
-	// 	att.Fields = fields
-	// }
 	msg.AddAttachment(&att)
+
 	slack := slackhook.New(slackwebhookurl)
 	slack.Send(&msg)
 
