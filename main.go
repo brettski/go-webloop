@@ -51,7 +51,7 @@ func main() {
 	http.HandleFunc("/newcontact", newContactHook)
 	http.HandleFunc("/prospectusrequest", prospectusRequest)
 	http.HandleFunc("/newsponsoronboard", newSponsorOnBoard)
-	http.HandleFunc("/trackcounselorticket", trackCounelorTicket)
+	http.HandleFunc("/trackcounselorticket", trackCounselorTicket)
 	log.Println("server started on port " + sport)
 	log.Fatal(http.ListenAndServe(":"+sport, nil))
 }
