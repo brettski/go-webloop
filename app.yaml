@@ -3,3 +3,5 @@ runtime: go111
 env_variables:
   AC_ACCOUNT_NAME: 'setme'
   SLACK_WEBHOOK_URL: 'setme2'
+  AC_API_KEY: 'setme3'
+  AIRTABLE_API_KEY: 'setme4'
