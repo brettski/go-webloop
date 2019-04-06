@@ -10,6 +10,9 @@ import (
 type Environment struct {
 	AcAccountName   string
 	SlackWebhookURL string
+	AcApiKey        string
+	AirtableApiKey  string
+	AcBaseUrl       string
 }
 
 func getEnvironmentInfo() (*Environment, error) {
@@ -20,9 +23,14 @@ func getEnvironmentInfo() (*Environment, error) {
 		log.Fatal("Slack webhook URL not provided. Stopping.")
 		return nil, errors.New("Slack webhook URL not provided. Stopping")
 	}
+	acapikey := os.Getenv("AC_API_KEY")
+	airtableapikey := os.Getenv("AIRTABLE_API_KEY")
 
 	return &Environment{
 		AcAccountName:   accountname,
 		SlackWebhookURL: slackwebhookurl,
+		AcApiKey:        acapikey,
+		AirtableApiKey:  airtableapikey,
+		AcBaseUrl:       "https://%s.api-us1.com/api/3",
 	}, nil
 }

@@ -27,8 +27,15 @@ func trackCounselorTicket(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Error unmarshaling json:\n%s", err)
 		return
 	}
-	fmt.Println("result:")
-	//fmt.Printf("%+v\n", ticket)
+
 	rbody := fmt.Sprintf("Hello %s\n%s", ticket.Name, ticket.Email)
 	w.Write([]byte(rbody))
+
+	contact, err := getAcContactByEmail(ticket.Email)
+	if err != nil {
+		fmt.Printf("Error looking up AC contact using email:\n%s\n", err)
+		return
+	}
+
+	fmt.Printf("contact count: %d\n", len(contact.Contacts))
 }
