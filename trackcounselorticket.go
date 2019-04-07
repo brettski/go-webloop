@@ -40,6 +40,8 @@ func trackCounselorTicket(w http.ResponseWriter, r *http.Request) {
 
 		if len(contactlist.Contacts) < 1 {
 			// write to list of missing emails
+			_ = atCreateRecord(ticket.Name, ticket.Email, "Email not found in AC")
+
 		} else if len(contactlist.Contacts) > 1 {
 			// write to list email return multiple
 		} else {
@@ -56,5 +58,5 @@ func trackCounselorTicket(w http.ResponseWriter, r *http.Request) {
 	}
 	rbody := fmt.Sprintf("Hello %s (%s)", ticket.Name, ticket.Email)
 	w.Write([]byte(rbody))
-
+	fmt.Println("trackCounelorTicket end")
 }
