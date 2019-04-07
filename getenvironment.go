@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"strings"
 )
 
 // Environment value struct
@@ -13,6 +14,7 @@ type Environment struct {
 	AcApiKey        string
 	AirtableApiKey  string
 	AcBaseUrl       string
+	CounselorSlugs  []string
 }
 
 func getEnvironmentInfo() (*Environment, error) {
@@ -25,6 +27,8 @@ func getEnvironmentInfo() (*Environment, error) {
 	}
 	acapikey := os.Getenv("AC_API_KEY")
 	airtableapikey := os.Getenv("AIRTABLE_API_KEY")
+	slug := strings.Replace(os.Getenv("COUNSELOR_SLUGS"), " ", "", -1)
+	counselorslugs := strings.Split(slug, ",")
 
 	return &Environment{
 		AcAccountName:   accountname,
@@ -32,5 +36,6 @@ func getEnvironmentInfo() (*Environment, error) {
 		AcApiKey:        acapikey,
 		AirtableApiKey:  airtableapikey,
 		AcBaseUrl:       "https://%s.api-us1.com/api/3",
+		CounselorSlugs:  counselorslugs,
 	}, nil
 }

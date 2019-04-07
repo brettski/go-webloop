@@ -13,6 +13,7 @@ import (
 )
 
 func getAcContactByEmail(email string) (*AcContactListPayload, error) {
+	fmt.Println("getAcContactByEmail")
 	if !strings.Contains(email, "@") {
 		fmt.Println("Provided email not valid")
 		return nil, errors.New("Provided email not valid")
@@ -72,4 +73,35 @@ func getAcContactByEmail(email string) (*AcContactListPayload, error) {
 	//fmt.Printf("Well here's our struct:\n%+v\n", acContact)
 
 	return &acContact, nil
+}
+
+func addTagToAcContact(contact AcContact, tagname string) bool {
+	fmt.Println("addTagToAcContact")
+	/*
+		get tag id
+		create tag if no exist
+		add tag to contact
+	*/
+	actag, err := acLookupContactTag(tagname)
+	if err != nil {
+		fmt.Printf("Error getting tag info from AC:\n%s\n", err)
+		return false
+	}
+	if len(actag.Id) == 0 {
+		// Tag doesn't exist, create it
+		actag, err = acAddContactTag(tagname)
+		if err != nil {
+			fmt.Printf("Error creating new tag:\n%s\n", err)
+			return false
+		}
+	}
+	// add tag to contact
+	contactTag := fmt.Sprintf(`{"contactTag": {"contact":"%s", "tag":"%s"}}`, contact.Id, actag.Id)
+	_, err = acPostRequest("/contactTags", contactTag)
+	if err != nil {
+		fmt.Printf("Error while adding tag to contact:\n%s\n", err)
+		return false
+	}
+
+	return true
 }

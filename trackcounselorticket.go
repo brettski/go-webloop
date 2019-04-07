@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+	"time"
 )
 
 func trackCounselorTicket(w http.ResponseWriter, r *http.Request) {
@@ -28,14 +30,31 @@ func trackCounselorTicket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rbody := fmt.Sprintf("Hello %s\n%s", ticket.Name, ticket.Email)
+	var contactlist *AcContactListPayload
+	if isTicketCounselor(ticket.Release.Slug) {
+		contactlist, err = getAcContactByEmail(ticket.Email)
+		if err != nil {
+			fmt.Printf("Error looking up AC contact using email:\n%s\n", err)
+			return
+		}
+
+		if len(contactlist.Contacts) < 1 {
+			// write to list of missing emails
+		} else if len(contactlist.Contacts) > 1 {
+			// write to list email return multiple
+		} else {
+			// tag contact at AC
+			year := strconv.Itoa(time.Now().Year())
+			tagName := "SpeakerRegistered" + year
+			if !addTagToAcContact(contactlist.Contacts[0], tagName) {
+				fmt.Printf("Failed to add tag, %s, to contact, %+v\n", tagName, contactlist.Contacts[0])
+			} else {
+				fmt.Printf("Tag (%s) added to contact (%s)\n", tagName, contactlist.Contacts[0].Email)
+			}
+		}
+
+	}
+	rbody := fmt.Sprintf("Hello %s (%s)", ticket.Name, ticket.Email)
 	w.Write([]byte(rbody))
 
-	contact, err := getAcContactByEmail(ticket.Email)
-	if err != nil {
-		fmt.Printf("Error looking up AC contact using email:\n%s\n", err)
-		return
-	}
-
-	fmt.Printf("contact count: %d\n", len(contact.Contacts))
 }
