@@ -25,12 +25,12 @@ func acGetRequest(endpoint string) (body []byte, err error) {
 
 	// "https://%s.api.-us1.com/api/3"
 	url := fmt.Sprintf(acbaseurl+endpoint, accountname)
-	fmt.Printf("Full GET req url:\n%s\n", url)
+	log.Printf("Full GET req url:\n%s\n", url)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		msg := fmt.Sprintf("Error setting up request:\n%s\n", err)
-		fmt.Println(msg)
+		log.Println(msg)
 		return
 	}
 	req.Header.Add("Api_Token", acapikey)
@@ -38,20 +38,20 @@ func acGetRequest(endpoint string) (body []byte, err error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Printf("Error requesting data from AC:\n%s\n", err)
+		log.Printf("Error requesting data from AC:\n%s\n", err)
 		return nil, errors.New("Error requesting data from AC")
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode > 399 {
 		msg := fmt.Sprintf("Response didn't return 2xx-3xx. Status received: %d", resp.StatusCode)
-		fmt.Println(msg)
+		log.Println(msg)
 		return nil, errors.New(msg)
 	}
 
 	contact, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	if err != nil {
-		fmt.Printf("Error reading body from request:\n%s\n", err)
+		log.Printf("Error reading body from request:\n%s\n", err)
 		return nil, errors.New("Error reading body from request")
 	}
 
@@ -70,12 +70,12 @@ func acPostRequest(endpoint string, payload string) (body []byte, err error) {
 
 	// "https://%s.api.-us1.com/api/3"
 	url := fmt.Sprintf(acbaseurl+endpoint, accountname)
-	fmt.Printf("Full POST req url:\n%s\n", url)
+	log.Printf("Full POST req url:\n%s\n", url)
 
 	req, err := http.NewRequest("POST", url, strings.NewReader(payload))
 	if err != nil {
 		msg := fmt.Sprintf("Error setting up request:\n%s\n", err)
-		fmt.Println(msg)
+		log.Println(msg)
 		return
 	}
 	req.Header.Add("Api_Token", acapikey)
@@ -83,20 +83,20 @@ func acPostRequest(endpoint string, payload string) (body []byte, err error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Printf("Error requesting data from AC:\n%s\n", err)
+		log.Printf("Error requesting data from AC:\n%s\n", err)
 		return
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode > 399 {
 		msg := fmt.Sprintf("Response didn't return 2xx-3xx. Status received: %d", resp.StatusCode)
-		fmt.Println(msg)
+		log.Println(msg)
 		return nil, errors.New(msg)
 	}
 
 	body, err = ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	if err != nil {
-		fmt.Printf("Error reading body from request\n%s\n", err)
+		log.Printf("Error reading body from request\n%s\n", err)
 		return
 	}
 

@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 )
 
 // AcTag typical tag structure returned when requesting a tag
@@ -31,23 +32,23 @@ type AcTagList struct {
 }
 
 func acLookupContactTag(name string) (actag AcTag, err error) {
-	fmt.Println("acLookupContactTag")
+	log.Println("acLookupContactTag")
 	endpoint := fmt.Sprintf("/tags?filters[tag]=%s", name)
 	body, err := acGetRequest(endpoint)
 	if err != nil {
-		fmt.Printf("Error requesting tag:\n%s\n", err)
+		log.Printf("Error requesting tag:\n%s\n", err)
 		return
 	}
 
 	var taglist AcTagList
 	err1 := json.Unmarshal(body, &taglist)
 	if err1 != nil {
-		fmt.Printf("Error unmarshal to taglist struct:\n%s\n", err1)
+		log.Printf("Error unmarshal to taglist struct:\n%s\n", err1)
 		return actag, err1
 	}
 
 	if len(taglist.Tags) < 1 {
-		fmt.Printf("No tags found\n")
+		log.Printf("No tags found\n")
 		return
 	}
 
@@ -63,7 +64,7 @@ func acLookupContactTag(name string) (actag AcTag, err error) {
 }
 
 func acAddContactTag(name string) (actag AcTag, err error) {
-	fmt.Println("acAddContactTag")
+	log.Println("acAddContactTag")
 	newtagpayload := AcNewTagPayload{
 		Tag: acNewTag{
 			TagType:     "contact",
@@ -73,20 +74,20 @@ func acAddContactTag(name string) (actag AcTag, err error) {
 	}
 	payload, err := json.Marshal(newtagpayload)
 	if err != nil {
-		fmt.Printf("Error marshalling stuct to json:\n%s\n", err)
+		log.Printf("Error marshalling stuct to json:\n%s\n", err)
 		return
 	}
-	fmt.Printf("New Tag Payload:\n%s\n", string(payload))
+	log.Printf("New Tag Payload:\n%s\n", string(payload))
 
 	body, err := acPostRequest("/tags", string(payload))
 	if err != nil {
-		fmt.Printf("Error while creating new contact tag:\n%s\n", err)
+		log.Printf("Error while creating new contact tag:\n%s\n", err)
 		return
 	}
 
 	err = json.Unmarshal(body, &actag)
 	if err != nil {
-		fmt.Printf("Error unmarshalling json to struct:\n%s\n", err)
+		log.Printf("Error unmarshalling json to struct:\n%s\n", err)
 		return
 	}
 

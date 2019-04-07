@@ -13,9 +13,9 @@ import (
 )
 
 func getAcContactByEmail(email string) (*AcContactListPayload, error) {
-	fmt.Println("getAcContactByEmail")
+	log.Println("getAcContactByEmail")
 	if !strings.Contains(email, "@") {
-		fmt.Println("Provided email not valid")
+		log.Println("Provided email not valid")
 		return nil, errors.New("Provided email not valid")
 	}
 
@@ -34,7 +34,7 @@ func getAcContactByEmail(email string) (*AcContactListPayload, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		msg := fmt.Sprintf("Error setting up request:\n%s\n", err)
-		fmt.Println(msg)
+		log.Println(msg)
 		return nil, errors.New(msg)
 	}
 	req.Header.Add("Api_Token", acapikey)
@@ -42,19 +42,19 @@ func getAcContactByEmail(email string) (*AcContactListPayload, error) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Printf("Error requesting data from AC:\n%s\n", err)
+		log.Printf("Error requesting data from AC:\n%s\n", err)
 		return nil, errors.New("Error requesting data from AC")
 	}
 
 	if resp.StatusCode != 200 {
 		msg := fmt.Sprintf("Response didn't return 200. Status received: %d", resp.StatusCode)
-		fmt.Println(msg)
+		log.Println(msg)
 		return nil, errors.New(msg)
 	}
 
 	contact, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Printf("Error reading body from request:\n%s\n", err)
+		log.Printf("Error reading body from request:\n%s\n", err)
 		return nil, errors.New("Error reading body from request")
 	}
 
@@ -62,12 +62,12 @@ func getAcContactByEmail(email string) (*AcContactListPayload, error) {
 	err2 := json.Unmarshal(contact, &acContact)
 	if err != nil {
 		msg := fmt.Sprintf("Unable to unmarshal json into struct:\n%s\n", err2)
-		fmt.Println(msg)
+		log.Println(msg)
 		return nil, errors.New(msg)
 	}
 
 	if len(acContact.Contacts) > 1 {
-		fmt.Printf("WARN: Multiple contacts received for email address: %s\n", email)
+		log.Printf("WARN: Multiple contacts received for email address: %s\n", email)
 	}
 
 	//fmt.Printf("Well here's our struct:\n%+v\n", acContact)
@@ -76,7 +76,7 @@ func getAcContactByEmail(email string) (*AcContactListPayload, error) {
 }
 
 func addTagToAcContact(contact AcContact, tagname string) bool {
-	fmt.Println("addTagToAcContact")
+	log.Println("addTagToAcContact")
 	/*
 		get tag id
 		create tag if no exist
@@ -84,14 +84,14 @@ func addTagToAcContact(contact AcContact, tagname string) bool {
 	*/
 	actag, err := acLookupContactTag(tagname)
 	if err != nil {
-		fmt.Printf("Error getting tag info from AC:\n%s\n", err)
+		log.Printf("Error getting tag info from AC:\n%s\n", err)
 		return false
 	}
 	if len(actag.Id) == 0 {
 		// Tag doesn't exist, create it
 		actag, err = acAddContactTag(tagname)
 		if err != nil {
-			fmt.Printf("Error creating new tag:\n%s\n", err)
+			log.Printf("Error creating new tag:\n%s\n", err)
 			return false
 		}
 	}
@@ -99,7 +99,7 @@ func addTagToAcContact(contact AcContact, tagname string) bool {
 	contactTag := fmt.Sprintf(`{"contactTag": {"contact":"%s", "tag":"%s"}}`, contact.Id, actag.Id)
 	_, err = acPostRequest("/contactTags", contactTag)
 	if err != nil {
-		fmt.Printf("Error while adding tag to contact:\n%s\n", err)
+		log.Printf("Error while adding tag to contact:\n%s\n", err)
 		return false
 	}
 

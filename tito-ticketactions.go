@@ -1,11 +1,11 @@
 package main
 
-import "fmt"
+import "log"
 
 func isTicketCounselor(slug string) bool {
 	env, err := getEnvironmentInfo()
 	if err != nil {
-		fmt.Printf("Error getting environment variables:\n%s\n", err)
+		log.Printf("Error getting environment variables:\n%s\n", err)
 		return false
 	}
 
