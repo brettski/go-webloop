@@ -4,4 +4,6 @@ env_variables:
   AC_ACCOUNT_NAME: 'setme'
   SLACK_WEBHOOK_URL: 'setme2'
   AC_API_KEY: 'setme3'
-  AIRTABLE_API_KEY: 'setme4'
+  AIRTABLE_ACCOUNT_ID: 'setme4'
+  AIRTABLE_API_KEY: 'setme5'
+  COUNSELOR_SLUGS: 'setme6'
