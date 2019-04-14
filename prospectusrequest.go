@@ -44,7 +44,7 @@ func prospectusRequest(w http.ResponseWriter, r *http.Request) {
 	if err1 != nil {
 		log.Fatal(err1)
 	}
-	accountname := env.SlackWebhookURL
+	accountname := env.AcAccountName
 	slackwebhookurl := env.SlackWebhookURL
 
 	msg := slackhook.Message{
