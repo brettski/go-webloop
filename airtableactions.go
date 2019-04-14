@@ -39,7 +39,7 @@ func atPostRequest(endpoint string, payload string) (body []byte, err error) {
 
 	// "https://%s.api.-us1.com/api/3"
 	url := fmt.Sprintf("https://api.airtable.com/v0/%s%s", atacctid, endpoint)
-	log.Printf("Full POST req url:\n%s\n", url)
+	//log.Printf("Full POST req url:\n%s\n", url)
 
 	req, err := http.NewRequest("POST", url, strings.NewReader(payload))
 	if err != nil {

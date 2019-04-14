@@ -25,7 +25,7 @@ func acGetRequest(endpoint string) (body []byte, err error) {
 
 	// "https://%s.api.-us1.com/api/3"
 	url := fmt.Sprintf(acbaseurl+endpoint, accountname)
-	log.Printf("Full GET req url:\n%s\n", url)
+	//log.Printf("Full GET req url:\n%s\n", url)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -70,7 +70,7 @@ func acPostRequest(endpoint string, payload string) (body []byte, err error) {
 
 	// "https://%s.api.-us1.com/api/3"
 	url := fmt.Sprintf(acbaseurl+endpoint, accountname)
-	log.Printf("Full POST req url:\n%s\n", url)
+	//log.Printf("Full POST req url:\n%s\n", url)
 
 	req, err := http.NewRequest("POST", url, strings.NewReader(payload))
 	if err != nil {

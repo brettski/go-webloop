@@ -14,3 +14,9 @@ Environment varables:
 * AIRTABLE_ACCOUNT_ID: Airtable account id for API URI
 * AIRTABLE_API_KEY: Airtable API key
 * COUNSELOR_SLUGS: Slug value of released ticket(s)
+
+gcp referece:  
+
+* `gcloud app deploy`
+
+Looking for a good way to store secrets for GCP app engine. No clean way to set environment vars
